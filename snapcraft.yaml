@@ -1,0 +1,53 @@
+name: yt-dlg
+summary: A cross platform front-end GUI of the popular youtube-dl written in wxPython.
+website: https://yt-dlg.github.io/yt-dlg/
+license: Unlicense
+icon: youtube_dl_gui/data/icons/hicolor/256x256/apps/youtube-dl-gui.png
+description: |
+      Download your favorite videos from supported sites.
+adopt-info: yt-dlg
+grade: stable
+confinement: strict  # or 'devmode'
+base: core22
+architectures:
+  - build-on: amd64
+
+apps:
+  yt-dlg:
+    command: bin/yt-dlg
+    extensions:
+      # HINT: Adds plugs and changes environment variables when building and running
+      - gnome
+    plugs:
+      - desktop
+      - desktop-legacy
+      - x11
+      - pulseaudio
+      - home
+      - gsettings
+      - network
+      - network-bind
+      - removable-media
+    desktop: usr/share/applications/yt-dlg.desktop
+
+parts:
+  yt-dlg:
+    plugin: python
+    source: https://github.com/oleksis/youtube-dl-gui.git
+    source-tag: v1.8.5
+    override-pull: |
+      craftctl default
+      craftctl set version=$(git describe --long --tags --always --match=v*.*.* | sed 's/v//')
+    stage-packages:
+      - libsdl2-2.0-0
+    python-packages:
+      - pypubsub == 4.0.3
+      - https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
+    override-build: |
+      python3 -m pip install --upgrade setuptools
+      python3 -m pip install polib
+      python3 setup.py build_trans
+      install -Dm644 "yt-dlg.desktop" -t "$CRAFT_PART_INSTALL/usr/share/applications/"
+      craftctl default
+    organize:
+      usr/lib/$CRAFT_ARCH_TRIPLET/pulseaudio/libpulsecommon-15.99.so: usr/lib/$CRAFT_ARCH_TRIPLET/libpulsecommon-15.99.so
