@@ -2,7 +2,6 @@ name: yt-dlg
 summary: A cross platform front-end GUI of the popular youtube-dl written in wxPython.
 website: https://yt-dlg.github.io/yt-dlg/
 license: Unlicense
-icon: youtube_dl_gui/data/icons/hicolor/256x256/apps/youtube-dl-gui.png
 description: |
       Download your favorite videos from supported sites.
 adopt-info: yt-dlg
